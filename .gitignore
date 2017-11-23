@@ -1,0 +1,5 @@
+.vscode/
+enron_db/
+xml/
+spark-warehouse/
+.git/
