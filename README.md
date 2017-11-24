@@ -21,13 +21,13 @@ For this project, we used:
 ### Methodology
 To achieve the final result, an analysis of the Enron's internal social network, the raw data went through the process listed below:
 
-#### Step 1 - Extracting the data:
+#### Step 1 - Extracting the Data:
 The first part of this project is to get all of the Enron dataset, which is composed of multiple .zip files, one for each Enron employee, containing all emails and its attachments (media such as audio, documens and photos), as well as a XML file tagging every email and its 'to' and 'from' information, which is the most important part of the dataset and the one we're looking into in order to build the companhies social graph. Once having access to these zipped files, we unzip the XML file that has the needed data and store it for further parsing.
 
-#### Step 2 - Parsing the XML and Building the first RDD:
+#### Step 2 - Parsing the XML and Building the First RDD:
 After getting the XML files of each employee, we inserted all of the xml filenames into an RDD for the sake of making the whole process scalable. We then need to parse the tags of the XMLs containing 'to' and 'from' to get all of the email adressses and its connections. We do this by iterating through every 'Document' tag (that holds all of the info of a single email) and use regular expression statements to refine the results. 
 
-#### Step 3 - operating the RDDs:
+#### Step 3 - Operating the RDDs:
 Doing a map operation in the XML RDD with the above mentioned process will create a new RDD made of the following structure:
 * (from email address, to email address)
 That structure means that an email has been sent between these two addressess.
@@ -36,7 +36,7 @@ Doing a reduceByKey that sums every identical connection will provide us with an
 * ((from email address, to email address), frequency)
 In which frequency means the number of emails that this source sent to this target.
 
-#### Step 4 - getting the data ready to build the graph
+#### Step 4 - Getting the Data Ready to Build the Graph:
 Since we are using Neo4J database to store our social network graph, a data format treatment is required to ensure successful insertion of the data into Neo4J with python connectors and Neo4j's query language restrictions.
 
 First, a DataFrame object is created from the RDD (that pyspark does natively) that represent the node structure, with an id and the name (email), after all, our nodes of the social network represents an email address. The code is made to guarantee that each unique email address is extracted from the previous RDD structure into the node dataframe. Similarly, another DataFrame is built to store edge information with tags "src", "dst" and "weight" that represent from email address, to email address and number of emails, respectively.
@@ -44,7 +44,6 @@ First, a DataFrame object is created from the RDD (that pyspark does natively) t
 Last, both Dataframes are exported to CSV files, of which the Neo4J query uses to generate nodes and edges
 
 #### Step 5 - Generating the Graph:
-
 The Neo4j system allows us to import directly a .csv file by command line, so utilizing [python-neo4j driver](https://neo4j.com/developer/python/), we start a connection with neo4j in the main.py file to execute Neo4j commands in our script. The main communication with Neo4j is executed by queries, so first, we load the .csv file to create our nodes and edges.
 
 For example, here is the query used to create the nodes: 
@@ -56,8 +55,7 @@ CREATE (e:Employee {username: csvLine.name})
 
 Take into consideration the way our .csv is built, because in the query we ask to read the file with headers, so it can identify the different columns in the file. 
 
-### Step 6 - Graph Analysis
-
+#### Step 6 - Graph Analysis:
 So once we have our graph, we made a centrality analysis in the nodes in the IPython Notebook extension to facilitate the visualization of the data.
 With the [py2neo](http://py2neo.org/2.0/) package, we were able to run the Neo4j queries in Python as well and retrieve the result into a variable, so it was possible to display.
 
@@ -73,7 +71,7 @@ Install spark on whichever folder you prefer. Just remember the path as you have
 
 * Download neo4j desktop for ubuntu (https://neo4j.com/download/)
 
-Install neo4j desktop
+Install neo4j desktop on .config folder on: /home/.config (in case you choose another directory, be sure to change it on main.py too)
 
 * install pyspark connector:
 ```
@@ -88,22 +86,7 @@ $ sudo pip install py2neo
 
 * create an "enron_db" folder alongside main.py script and place the XML dataset files inside;
 * create a "xml" folder alongside main.py script;
-
-
-
-
-
-
-The main.py file is responsible for:
-* Extracting all the xml files from each employees mail dataset zip folder and place it on a temporary folder;
-* Parsing the xml files to get all the pairs to-from of each email (it permutates if there is more than one to recipient) and store this information on an RDD;
-* Create two separate RDDs with the vertices(email adresses) and edges(emails) obtained from previous RDD;
-* Writing the RDDs informations in two CSV files;
-* Building a Neo4J database with the RDD information (a query loads both csv files to create the vertices and edges of the graph). 
-
-The analise.py file is responsible for:
-* Retrieving the Neo4J database and calculating degree, weighted degree, betweenness and pagerank values for the graph.
-
-
-#
-* 
+* run main.py:
+```
+$ sudo python main.py
+```
