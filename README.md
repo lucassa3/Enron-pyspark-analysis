@@ -43,7 +43,20 @@ First, a DataFrame object is created from the RDD (that pyspark does natively) t
 
 Last, both Dataframes are exported to CSV files, of which the Neo4J query uses to generate nodes and edges
 
-### asdasdasdasdasdasdasdasdasd socorro
+#### Step 5 - Generating the Graph:
+
+The Neo4j system allows us to import directly a .csv file by command line, so utilizing [python-neo4j driver](https://neo4j.com/developer/python/), we start a connection with neo4j in the main.py file to execute Neo4j commands in our script. The main communication with Neo4j is executed by queries, so first, we load the .csv file to create our nodes and edges.
+
+For example, here is the query used to create the nodes: 
+
+"""
+    LOAD CSV WITH HEADERS FROM "file:///nodes/"""+node_csv_name+"""" AS csvLine
+    CREATE (e:Employee {username: csvLine.name})
+"""
+
+Take into consideration the way our .csv is built, because in the query we ask to read the file with headers, so it can identify the different columns in the file. 
+
+### Step 6 - Graph Analysis
 
 ### Installing and running (local mode)
 
