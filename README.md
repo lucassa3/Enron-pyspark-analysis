@@ -4,7 +4,13 @@ A spark application that retrieves content from Enron's mail dataset and builds 
 # The Project
 Our goal is to take the enron emails dataset, made available after the company bankruptcy in 2002, analyze it using big-data tools and get some relevant social network insight, such as degree, betweenness, and pagerank from all of the email adresses within the dataset. The idea of using big-data tools is to make the project scalable for running in multiple clusters in order to be able to process the whole Enron data (and possibly even larger datasets with similar data format).
 
-The core of this project could be potentially used to analyze other mail datasets, such as your companhies' mail record, as long as the employees emails are tagged into an XML file with to and from fields tagged accordingly. 
+The core of this project could be potentially used to analyze other mail datasets, such as your companies' mail record, as long as the employees emails are tagged into an XML file with to and from fields tagged accordingly. 
+
+The schema below presents the basic architecture of the project, from the raw dataset to the final report. The dataset was made available by the company in multiple files, because of the big amount of data, due to this everything had to be parsed to retrieve the information needed from the entire dataset. With the necessary data extracted from the dataset, we use a distributed method to better process the data into a graph database model.
+
+ ![picture](imgs/schema.jpg)
+
+Turn the dataset into a Graph Database allow us to use the methodology of [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) to analyze our data.
 
 ### Tools used
 For this project, we used:
