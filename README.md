@@ -58,6 +58,9 @@ Take into consideration the way our .csv is built, because in the query we ask t
 
 ### Step 6 - Graph Analysis
 
+So once we have our graph, we made a centrality analysis in the nodes in the IPython Notebook extension to facilitate the visualization of the data.
+With the [py2neo](http://py2neo.org/2.0/) package, we were able to run the Neo4j queries in Python as well and retrieve the result into a variable, so it was possible to display.
+
 ### Installing and Running (local mode)
 
 In order to use this script, the following requirements are needed:
