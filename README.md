@@ -15,8 +15,21 @@ For this project, we used:
 ### Methodology
 To achieve the final result, an analysis of the Enron's internal social network, the raw data went through the process listed below:
 
-Step 1 - extracting the data:
+#### Step 1 - Extracting the data:
+The first part of this project is to get all of the Enron dataset, which is composed of multiple .zip files, one for each Enron employee, containing all emails and its attachments (media such as audio, documens and photos), as well as a XML file tagging every email and its 'to' and 'from' information, which is the most important part of the dataset and the one we're looking into in order to build the companhies social graph. Once having access to these zipped files, we unzip the XML file that has the needed data and store it for further parsing.
 
+#### Step 2 - Parsing the XML and Building the first RDD:
+After getting the XML files of each employee, we inserted all of the xml filenames into an RDD for the sake of making the whole process scalable. We then need to parse the tags of the XMLs containing 'to' and 'from' to get all of the email adressses and its connections. We do this by iterating though every 'Document' tag (that holds all of the info of a single email) and using regular expression statements to refine the results. 
+
+
+#### Step 3 - operating the RDDs:
+Doing a map operation in the XML RDD with the above mentioned process will create a new RDD made of the following structure:
+(from email address, to email address)
+That structure means that an email has been sent between these two addressess.
+
+Doing a reduceByKey that sums every identical connection will provide us with another RDD containing:
+((from email address, to email address), frequency)
+In which frequency means the number of emails that this source sent to this target.
 
 The main.py file is responsible for:
 * Extracting all the xml files from each employees mail dataset zip folder and place it on a temporary folder;
