@@ -27,7 +27,6 @@ The first part of this project is to get all of the Enron dataset, which is comp
 #### Step 2 - Parsing the XML and Building the first RDD:
 After getting the XML files of each employee, we inserted all of the xml filenames into an RDD for the sake of making the whole process scalable. We then need to parse the tags of the XMLs containing 'to' and 'from' to get all of the email adressses and its connections. We do this by iterating through every 'Document' tag (that holds all of the info of a single email) and use regular expression statements to refine the results. 
 
-
 #### Step 3 - operating the RDDs:
 Doing a map operation in the XML RDD with the above mentioned process will create a new RDD made of the following structure:
 * (from email address, to email address)
@@ -40,8 +39,35 @@ In which frequency means the number of emails that this source sent to this targ
 #### Step 4 - getting the data ready to build the graph
 Since we are using Neo4J database to store our social network graph, a data format treatment is required to ensure successful insertion of the data into Neo4J with python connectors and Neo4j's query language restrictions.
 
-We first create a DataFrame object (that spark does)
+First, a DataFrame object is created from the RDD (that pyspark does natively) that represent the node structure, with an id and the name (email), after all, our nodes of the social network represents an email address. The code is made to guarantee that each unique email address is extracted from the previous RDD structure into the node dataframe. Similarly, another DataFrame is built to store edge information with tags "src", "dst" and "weight" that represent from email address, to email address and number of emails, respectively.
 
+Last, both Dataframes are exported to CSV files, of which the Neo4J query uses to generate nodes and edges
+
+### asdasdasdasdasdasdasdasdasd socorro
+
+### Installing and running (local mode)
+
+In order to use this script, the following requirements are needed:
+
+* A Linux distro OS;
+* Python3 (usually comes by default with some linux distributions);
+* Spark release 2.2.0 - Download on this link (https://spark.apache.org/downloads.html);
+
+Install spark on whichever folder you prefer. Just remember the path as you have to access it later.
+
+* install pyspark connector:
+
+```
+$ sudo pip install pyspark
+```
+
+
+
+* Install Neo4j APIs Py2Neo and Neo4j.v1 
+```
+$ sudo pip install neo4j-driver
+$ sudo pip install pip install py2neo
+```
 
 The main.py file is responsible for:
 * Extracting all the xml files from each employees mail dataset zip folder and place it on a temporary folder;
