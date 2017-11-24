@@ -49,10 +49,10 @@ The Neo4j system allows us to import directly a .csv file by command line, so ut
 
 For example, here is the query used to create the nodes: 
 
-"""
-    LOAD CSV WITH HEADERS FROM "file:///nodes/"""+node_csv_name+"""" AS csvLine
-    CREATE (e:Employee {username: csvLine.name})
-"""
+```
+LOAD CSV WITH HEADERS FROM "file:///nodes/"""+node_csv_name+"""" AS csvLine
+CREATE (e:Employee {username: csvLine.name})
+```
 
 Take into consideration the way our .csv is built, because in the query we ask to read the file with headers, so it can identify the different columns in the file. 
 
