@@ -58,7 +58,7 @@ Take into consideration the way our .csv is built, because in the query we ask t
 
 ### Step 6 - Graph Analysis
 
-### Installing and running (local mode)
+### Installing and Running (local mode)
 
 In order to use this script, the following requirements are needed:
 
@@ -68,19 +68,28 @@ In order to use this script, the following requirements are needed:
 
 Install spark on whichever folder you prefer. Just remember the path as you have to access it later.
 
-* install pyspark connector:
+* Download neo4j desktop for ubuntu (https://neo4j.com/download/)
 
+Install neo4j desktop
+
+* install pyspark connector:
 ```
 $ sudo pip install pyspark
 ```
 
-
-
-* Install Neo4j APIs Py2Neo and Neo4j.v1 
+* Install Neo4j APIs Py2Neo and Neo4j.v1:
 ```
 $ sudo pip install neo4j-driver
-$ sudo pip install pip install py2neo
+$ sudo pip install py2neo
 ```
+
+* create an "enron_db" folder alongside main.py script and place the XML dataset files inside;
+* create a "xml" folder alongside main.py script;
+
+
+
+
+
 
 The main.py file is responsible for:
 * Extracting all the xml files from each employees mail dataset zip folder and place it on a temporary folder;
