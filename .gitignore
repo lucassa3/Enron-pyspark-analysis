@@ -3,3 +3,4 @@ enron_db/
 xml/
 spark-warehouse/
 .git/
+.ipynb_checkpoints/

@@ -98,7 +98,7 @@ def edge_format_csv(f):
 def node_format_csv(f):
     return [(f[0][0],f[0][0]),(f[0][1],f[0][1])]
 
-def generate_neo4j_graph():
+def generate_neo4j_graph(node_csv_name, edge_csv_name):
     print("Building graph...")
     
     driver = GraphDatabase.driver("bolt://127.0.0.1", auth=("neo4j", "showdotomas"),encrypted=False)
@@ -110,7 +110,7 @@ def generate_neo4j_graph():
     session.run(clean)
 
     load = """
-    LOAD CSV WITH HEADERS FROM "file:///nodes/part-00000-cda26823-8d76-486c-a264-293824f3c566-c000.csv" AS csvLine
+    LOAD CSV WITH HEADERS FROM "file:///nodes/"""+node_csv_name+"""" AS csvLine
     CREATE (e:Employee {username: csvLine.name})
     """
 
@@ -118,10 +118,10 @@ def generate_neo4j_graph():
 
     edge = """
     USING PERIODIC COMMIT 500
-    LOAD CSV WITH HEADERS FROM "file:///edges/part-00000-a7c31948-b369-450a-b1f9-db1f810388a5-c000.csv" AS csvLine
+    LOAD CSV WITH HEADERS FROM "file:///edges/"""+edge_csv_name+"""" AS csvLine
     MATCH (src:Employee),(dst:Employee)
     WHERE src.username =csvLine.src AND dst.username=csvLine.dst
-    CREATE (src)-[:EMAIL { weight: csvLine.weight }]->(dst)
+    CREATE (src)-[:EMAIL { weight: toInt(csvLine.weight) }]->(dst)
     """
 
     session.run(edge)
@@ -146,15 +146,24 @@ if __name__ == '__main__':
     	
     rdd = generateEmailRDD()
 
+    
     edge_rdd = rdd.flatMap(lambda x: edge_format_csv(x)).toDF(["src","dst","weight"])
     node_rdd = rdd.flatMap(lambda x: node_format_csv(x)).distinct().toDF(["id","name"])
     
     print("Numer of nodes: " +str(node_rdd.count()))
     print("Numer of edges: " +str(edge_rdd.count()))
 
-    #edge_rdd.coalesce(1).write.format('com.databricks.spark.csv').options(header='true').save(r'../../../.config/Neo4j Desktop/Application/neo4jDatabases/database-9be871ed-d8ad-4ec3-b24a-71b5431b0fbd/current/import/edges')
-    #node_rdd.coalesce(1).write.format('com.databricks.spark.csv').options(header='true').save(r'../../../.config/Neo4j Desktop/Application/neo4jDatabases/database-9be871ed-d8ad-4ec3-b24a-71b5431b0fbd/current/import/nodes')
+    has_csv = [f for f in os.listdir(r'/home/lucas/.config/Neo4j Desktop/Application/neo4jDatabases/database-9be871ed-d8ad-4ec3-b24a-71b5431b0fbd/current/import') if f.endswith('es')]
 
-    generate_neo4j_graph()
+    if len(has_csv)==0:
+        edge_rdd.coalesce(1).write.format('com.databricks.spark.csv').options(header='true').save(r'/home/lucas/.config/Neo4j Desktop/Application/neo4jDatabases/database-9be871ed-d8ad-4ec3-b24a-71b5431b0fbd/current/import/edges')
+        node_rdd.coalesce(1).write.format('com.databricks.spark.csv').options(header='true').save(r'/home/lucas/.config/Neo4j Desktop/Application/neo4jDatabases/database-9be871ed-d8ad-4ec3-b24a-71b5431b0fbd/current/import/nodes')
+    
+    node_csv_name = [f for f in os.listdir(r'/home/lucas/.config/Neo4j Desktop/Application/neo4jDatabases/database-9be871ed-d8ad-4ec3-b24a-71b5431b0fbd/current/import/nodes') if f.endswith('.csv')]
+    edge_csv_name = [f for f in os.listdir(r'/home/lucas/.config/Neo4j Desktop/Application/neo4jDatabases/database-9be871ed-d8ad-4ec3-b24a-71b5431b0fbd/current/import/edges') if f.endswith('.csv')]
+
+    if node_csv_name and edge_csv_name:
+        generate_neo4j_graph(node_csv_name[0], edge_csv_name[0])
+
 
     
