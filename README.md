@@ -55,6 +55,12 @@ CREATE (e:Employee {username: csvLine.name})
 
 Take into consideration the way our .csv is built, because in the query we ask to read the file with headers, so it can identify the different columns in the file. 
 
+Here we can see an small visualization of our graph, sadly the Neo4j tool to display the graph is limited by 300 nodes, so is hard to have an idea of how the real graph look like, because of the huge amount of nodes. 
+
+![picture](imgs/neo.png)
+
+We have a lot of disconnected nodes showing as well, that probably are connected only with others nodes that are not showing up.
+
 #### Step 6 - Graph Analysis:
 So once we have our graph, we made a centrality analysis in the nodes in the IPython Notebook extension to facilitate the visualization of the data.
 With the [py2neo](http://py2neo.org/2.0/) package, we were able to run the Neo4j queries in Python as well and retrieve the result into a variable, so it was possible to display.
@@ -90,3 +96,9 @@ $ sudo pip install py2neo
 ```
 $ sudo python main.py
 ```
+
+### Results
+
+In the end, we were able to obtain the degree, weighted degree, betweenness and pagerank of each employee in the company, listed in decrescent order. Because of the choice of Graph Databases to analyze the dataset we were able to easily obtain those information, besides this database model is suitable to deal with Big Data, there are existable tools to extract centralities measurements and patterns/groups identifications.
+
+In our results, we can see Kenneth Lay in the top of the degree and weighted degree list, once CEO of the company, right below the oficial Enron email "40ENRON@ENRON.com", that used to broadcast messages to all employers. It makes sense that the CEO of the company has a high degree with the employers, but what is interting is the fact that his pagerank is pretty low in the list. The pagerank measure consider your importance based on the edges directed to the node from others nodes, so if the pagerank is low but the degree is high, it means that he receveid emails from very few people. This can support the speculation that Kenneth Lay, as others big players in the economic disaster, frequently erased the mailbox to avoid the leaking of corruption information.
